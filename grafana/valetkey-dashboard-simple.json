@@ -1,0 +1,469 @@
+{
+  "annotations": { "list": [] },
+  "__inputs": [
+    {
+      "name": "DS_CLOUDWATCH",
+      "label": "CloudWatch",
+      "type": "datasource",
+      "pluginId": "cloudwatch",
+      "pluginName": "CloudWatch"
+    }
+  ],
+  "schemaVersion": 36,
+  "version": 2,
+  "title": "ValetKey Backup Metrics (Working)",
+  "refresh": "30s",
+  "timezone": "browser",
+  "panels": [
+    {
+      "id": 1,
+      "type": "row",
+      "title": "Backup Metrics - Custom Namespace (ValetKey/Backup)",
+      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 1 },
+      "collapsed": false
+    },
+    {
+      "id": 10,
+      "type": "stat",
+      "title": "Backup Success Rate (PENDING_SYNC)",
+      "datasource": "${DS_CLOUDWATCH}",
+      "targets": [
+        {
+          "namespace": "ValetKey/Backup",
+          "metricName": "BackupSuccess",
+          "statistics": ["Sum"],
+          "period": "300",
+          "region": "ap-southeast-1",
+          "dimensions": { "Status": "PENDING_SYNC" },
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "value": 0, "color": "red" },
+              { "value": 1, "color": "green" }
+            ]
+          }
+        }
+      },
+      "options": {
+        "colorMode": "background"
+      },
+      "gridPos": { "x": 0, "y": 1, "w": 6, "h": 4 }
+    },
+    {
+      "id": 11,
+      "type": "stat",
+      "title": "Backup Failures (FAILED)",
+      "datasource": "${DS_CLOUDWATCH}",
+      "targets": [
+        {
+          "namespace": "ValetKey/Backup",
+          "metricName": "BackupSuccess",
+          "statistics": ["Sum"],
+          "period": "300",
+          "region": "ap-southeast-1",
+          "dimensions": { "Status": "FAILED" },
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "value": 0, "color": "green" },
+              { "value": 1, "color": "red" }
+            ]
+          }
+        }
+      },
+      "options": {
+        "colorMode": "background"
+      },
+      "gridPos": { "x": 6, "y": 1, "w": 6, "h": 4 }
+    },
+    {
+      "id": 12,
+      "type": "stat",
+      "title": "Backup Pending (PENDING)",
+      "datasource": "${DS_CLOUDWATCH}",
+      "targets": [
+        {
+          "namespace": "ValetKey/Backup",
+          "metricName": "BackupSuccess",
+          "statistics": ["Sum"],
+          "period": "300",
+          "region": "ap-southeast-1",
+          "dimensions": { "Status": "PENDING" },
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "value": 0, "color": "blue" },
+              { "value": 1, "color": "yellow" }
+            ]
+          }
+        }
+      },
+      "options": {
+        "colorMode": "background"
+      },
+      "gridPos": { "x": 12, "y": 1, "w": 6, "h": 4 }
+    },
+    {
+      "id": 13,
+      "type": "stat",
+      "title": "Average Backup Latency (seconds)",
+      "datasource": "${DS_CLOUDWATCH}",
+      "targets": [
+        {
+          "namespace": "ValetKey/Backup",
+          "metricName": "BackupLatency",
+          "statistics": ["Average"],
+          "period": "300",
+          "region": "ap-southeast-1",
+          "dimensions": {},
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "decimals": 2,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "value": 0, "color": "green" },
+              { "value": 5, "color": "yellow" },
+              { "value": 10, "color": "red" }
+            ]
+          }
+        }
+      },
+      "options": {
+        "colorMode": "background"
+      },
+      "gridPos": { "x": 18, "y": 1, "w": 6, "h": 4 }
+    },
+    {
+      "id": 20,
+      "type": "timeseries",
+      "title": "Backup Latency Over Time (All Files)",
+      "datasource": "${DS_CLOUDWATCH}",
+      "targets": [
+        {
+          "namespace": "ValetKey/Backup",
+          "metricName": "BackupLatency",
+          "statistics": ["Average", "Maximum", "Minimum"],
+          "period": "60",
+          "region": "ap-southeast-1",
+          "dimensions": {},
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "fillOpacity": 10,
+            "showPoints": "auto"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Average" },
+            "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "blue" } }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Maximum" },
+            "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "red" } }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Minimum" },
+            "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "green" } }]
+          }
+        ]
+      },
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom" },
+        "tooltip": { "mode": "multi" }
+      },
+      "gridPos": { "x": 0, "y": 5, "w": 12, "h": 8 }
+    },
+    {
+      "id": 21,
+      "type": "timeseries",
+      "title": "Backup Throughput Over Time (All Files)",
+      "datasource": "${DS_CLOUDWATCH}",
+      "targets": [
+        {
+          "namespace": "ValetKey/Backup",
+          "metricName": "BackupThroughput",
+          "statistics": ["Average"],
+          "period": "60",
+          "region": "ap-southeast-1",
+          "dimensions": {},
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "MBs",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "fillOpacity": 20,
+            "showPoints": "auto"
+          }
+        }
+      },
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom" },
+        "tooltip": { "mode": "single" }
+      },
+      "gridPos": { "x": 12, "y": 5, "w": 12, "h": 8 }
+    },
+    {
+      "id": 30,
+      "type": "timeseries",
+      "title": "Backup Status Trend (Pending Sync / Completed / Failed / Pending)",
+      "datasource": "${DS_CLOUDWATCH}",
+      "targets": [
+        {
+          "namespace": "ValetKey/Backup",
+          "metricName": "BackupSuccess",
+          "statistics": ["Sum"],
+          "period": "300",
+          "region": "ap-southeast-1",
+          "dimensions": { "Status": "COMPLETED" },
+          "refId": "A",
+          "alias": "Completed"
+        },
+        {
+          "namespace": "ValetKey/Backup",
+          "metricName": "BackupSuccess",
+          "statistics": ["Sum"],
+          "period": "300",
+          "region": "ap-southeast-1",
+          "dimensions": { "Status": "FAILED" },
+          "refId": "B",
+          "alias": "Failed"
+        },
+        {
+          "namespace": "ValetKey/Backup",
+          "metricName": "BackupSuccess",
+          "statistics": ["Sum"],
+          "period": "300",
+          "region": "ap-southeast-1",
+          "dimensions": { "Status": "PENDING" },
+          "refId": "C",
+          "alias": "Pending"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "custom": {
+            "drawStyle": "bars",
+            "lineInterpolation": "linear",
+            "fillOpacity": 80,
+            "showPoints": "never",
+            "stacking": { "mode": "normal" }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Pending Sync" },
+            "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "blue" } }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Completed" },
+            "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "green" } }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Failed" },
+            "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "red" } }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Pending" },
+            "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "yellow" } }]
+          }
+        ]
+      },
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom" },
+        "tooltip": { "mode": "multi" }
+      },
+      "gridPos": { "x": 0, "y": 13, "w": 24, "h": 8 }
+    },
+    {
+      "id": 40,
+      "type": "row",
+      "title": "AWS Lambda Metrics",
+      "gridPos": { "x": 0, "y": 21, "w": 24, "h": 1 },
+      "collapsed": false
+    },
+    {
+      "id": 41,
+      "type": "timeseries",
+      "title": "Lambda Invocations & Errors (valetkey-backup-worker)",
+      "datasource": "${DS_CLOUDWATCH}",
+      "targets": [
+        {
+          "namespace": "AWS/Lambda",
+          "metricName": "Invocations",
+          "statistics": ["Sum"],
+          "period": "60",
+          "region": "ap-southeast-1",
+          "dimensions": { "FunctionName": "valetkey-backup-worker" },
+          "refId": "A",
+          "alias": "Invocations"
+        },
+        {
+          "namespace": "AWS/Lambda",
+          "metricName": "Errors",
+          "statistics": ["Sum"],
+          "period": "60",
+          "region": "ap-southeast-1",
+          "dimensions": { "FunctionName": "valetkey-backup-worker" },
+          "refId": "B",
+          "alias": "Errors"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "fillOpacity": 10,
+            "showPoints": "auto"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Errors" },
+            "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "red" } }]
+          }
+        ]
+      },
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom" },
+        "tooltip": { "mode": "multi" }
+      },
+      "gridPos": { "x": 0, "y": 22, "w": 12, "h": 8 }
+    },
+    {
+      "id": 42,
+      "type": "timeseries",
+      "title": "Lambda Duration (ms) - valetkey-backup-worker",
+      "datasource": "${DS_CLOUDWATCH}",
+      "targets": [
+        {
+          "namespace": "AWS/Lambda",
+          "metricName": "Duration",
+          "statistics": ["Average", "Maximum"],
+          "period": "60",
+          "region": "ap-southeast-1",
+          "dimensions": { "FunctionName": "valetkey-backup-worker" },
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "fillOpacity": 10,
+            "showPoints": "auto"
+          }
+        }
+      },
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom" },
+        "tooltip": { "mode": "multi" }
+      },
+      "gridPos": { "x": 12, "y": 22, "w": 12, "h": 8 }
+    },
+    {
+      "id": 50,
+      "type": "row",
+      "title": "AWS SQS Metrics",
+      "gridPos": { "x": 0, "y": 30, "w": 24, "h": 1 },
+      "collapsed": false
+    },
+    {
+      "id": 51,
+      "type": "timeseries",
+      "title": "SQS Queue Depth (valetkey-backup-queue)",
+      "datasource": "${DS_CLOUDWATCH}",
+      "targets": [
+        {
+          "namespace": "AWS/SQS",
+          "metricName": "ApproximateNumberOfMessagesVisible",
+          "statistics": ["Average"],
+          "period": "60",
+          "region": "ap-southeast-1",
+          "dimensions": { "QueueName": "valetkey-backup-queue" },
+          "refId": "A",
+          "alias": "Visible Messages"
+        },
+        {
+          "namespace": "AWS/SQS",
+          "metricName": "ApproximateAgeOfOldestMessage",
+          "statistics": ["Maximum"],
+          "period": "60",
+          "region": "ap-southeast-1",
+          "dimensions": { "QueueName": "valetkey-backup-queue" },
+          "refId": "B",
+          "alias": "Oldest Message Age (s)"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "fillOpacity": 10,
+            "showPoints": "auto"
+          }
+        }
+      },
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom" },
+        "tooltip": { "mode": "multi" }
+      },
+      "gridPos": { "x": 0, "y": 31, "w": 24, "h": 8 }
+    }
+  ],
+  "time": { "from": "now-1h", "to": "now" },
+  "timepicker": {
+    "refresh_intervals": ["5s", "10s", "30s", "1m", "5m", "15m", "30m", "1h"]
+  },
+  "templating": {
+    "list": [
+      {
+        "type": "datasource",
+        "name": "DS_CLOUDWATCH",
+        "pluginId": "cloudwatch",
+        "label": "CloudWatch Data Source",
+        "query": "cloudwatch"
+      }
+    ]
+  }
+}
+
